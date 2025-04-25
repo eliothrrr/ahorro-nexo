@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ahorro Nexo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f2f2f2;
+    }
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+    .result {
+      margin-top: 20px;
+      background: #e7ffe7;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Ahorro Nexo</h2>
+    <p>Ingreso semanal: <strong>$550</strong></p>
+    <p>Pasajes: <strong>$170</strong></p>
+    <p>Disponible tras pasajes: <strong id="disponible"></strong></p>
+
+    <button onclick="calcularAhorro()">Calcular Ahorro</button>
+
+    <div class="result" id="resultado" style="display:none"></div>
+  </div>
+
+  <script>
+    const ingreso = 550;
+    const pasajes = 170;
+    const disponible = ingreso - pasajes;
+    document.getElementById("disponible").innerText = `$${disponible}`;
+
+    function calcularAhorro() {
+      const datos = 150;
+      const spotify = 33;
+      const totalMensual = datos + spotify;
+      const ahorroSemanal = Math.ceil(totalMensual / 4);
+      const gastoLibre = disponible - ahorroSemanal;
+
+      localStorage.setItem("ahorroSemanal", ahorroSemanal);
+      localStorage.setItem("gastoLibre", gastoLibre);
+
+      document.getElementById("resultado").style.display = "block";
+      document.getElementById("resultado").innerHTML = `
+        Ahorro semanal sugerido: <strong>$${ahorroSemanal}</strong><br>
+        Te queda para gastar: <strong>$${gastoLibre}</strong>
+      `;
+    }
+
+    window.onload = () => {
+      const ahorro = localStorage.getItem("ahorroSemanal");
+      const libre = localStorage.getItem("gastoLibre");
+      if (ahorro && libre) {
+        document.getElementById("resultado").style.display = "block";
+        document.getElementById("resultado").innerHTML = `
+          Ahorro semanal sugerido: <strong>$${ahorro}</strong><br>
+          Te queda para gastar: <strong>$${libre}</strong>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>
