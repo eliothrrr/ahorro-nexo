@@ -3,30 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ahorro Nexo</title>
+  <title>Ahorro y Gastos - Nexo</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background: #f9f9f9;
       padding: 20px;
-      background: #f2f2f2;
     }
     .container {
-      max-width: 400px;
+      max-width: 500px;
       margin: auto;
-      background: #fff;
+      background: white;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-    input, button {
+    h2 {
+      text-align: center;
+    }
+    textarea, button {
       width: 100%;
-      padding: 10px;
       margin-top: 10px;
+      padding: 10px;
       font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
     }
     .result {
       margin-top: 20px;
-      background: #e7ffe7;
+      background: #e1f5e1;
       padding: 10px;
       border-radius: 5px;
     }
@@ -34,47 +39,62 @@
 </head>
 <body>
   <div class="container">
-    <h2>Ahorro Nexo</h2>
-    <p>Ingreso semanal: <strong>$550</strong></p>
-    <p>Pasajes: <strong>$170</strong></p>
-    <p>Disponible tras pasajes: <strong id="disponible"></strong></p>
+    <h2>Ahorro y Gastos - Nexo</h2>
 
-    <button onclick="calcularAhorro()">Calcular Ahorro</button>
+    <p><strong>Ingreso semanal:</strong> $550</p>
+    <p><strong>Pasajes semanales:</strong> $170</p>
+    <p><strong>Plan mensual:</strong> $150</p>
+    <p><strong>Spotify mensual:</strong> $33</p>
+
+    <h3>Notas de gastos</h3>
+    <textarea id="gastos" rows="6" placeholder="Escribe aquí tus gastos semanales..."></textarea>
+    <button onclick="guardarGastos()">Guardar notas</button>
+
+    <button onclick="calcularAhorro()">Calcular Ahorro Sugerido</button>
 
     <div class="result" id="resultado" style="display:none"></div>
   </div>
 
   <script>
-    const ingreso = 550;
+    const ingresoSemanal = 550;
     const pasajes = 170;
-    const disponible = ingreso - pasajes;
-    document.getElementById("disponible").innerText = `$${disponible}`;
+    const planMensual = 150;
+    const spotify = 33;
 
     function calcularAhorro() {
-      const datos = 150;
-      const spotify = 33;
-      const totalMensual = datos + spotify;
+      const restante = ingresoSemanal - pasajes;
+      const totalMensual = planMensual + spotify;
       const ahorroSemanal = Math.ceil(totalMensual / 4);
-      const gastoLibre = disponible - ahorroSemanal;
+      const disponible = restante - ahorroSemanal;
 
-      localStorage.setItem("ahorroSemanal", ahorroSemanal);
-      localStorage.setItem("gastoLibre", gastoLibre);
-
-      document.getElementById("resultado").style.display = "block";
-      document.getElementById("resultado").innerHTML = `
-        Ahorro semanal sugerido: <strong>$${ahorroSemanal}</strong><br>
-        Te queda para gastar: <strong>$${gastoLibre}</strong>
+      document.getElementById('resultado').style.display = 'block';
+      document.getElementById('resultado').innerHTML = `
+        <strong>Ahorro sugerido por semana:</strong> $${ahorroSemanal}<br>
+        <strong>Dinero libre para gastar:</strong> $${disponible}
       `;
+
+      localStorage.setItem('ahorroSemanal', ahorroSemanal);
+      localStorage.setItem('dineroLibre', disponible);
+    }
+
+    function guardarGastos() {
+      const notas = document.getElementById("gastos").value;
+      localStorage.setItem("notasGastos", notas);
+      alert("¡Notas guardadas!");
     }
 
     window.onload = () => {
+      const notasGuardadas = localStorage.getItem("notasGastos");
+      if (notasGuardadas) {
+        document.getElementById("gastos").value = notasGuardadas;
+      }
       const ahorro = localStorage.getItem("ahorroSemanal");
-      const libre = localStorage.getItem("gastoLibre");
+      const libre = localStorage.getItem("dineroLibre");
       if (ahorro && libre) {
-        document.getElementById("resultado").style.display = "block";
-        document.getElementById("resultado").innerHTML = `
-          Ahorro semanal sugerido: <strong>$${ahorro}</strong><br>
-          Te queda para gastar: <strong>$${libre}</strong>
+        document.getElementById('resultado').style.display = 'block';
+        document.getElementById('resultado').innerHTML = `
+          <strong>Ahorro sugerido por semana:</strong> $${ahorro}<br>
+          <strong>Dinero libre para gastar:</strong> $${libre}
         `;
       }
     }
